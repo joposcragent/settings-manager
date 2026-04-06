@@ -101,7 +101,7 @@ tasks.named("compileKotlin") {
 }
 
 tasks.bootBuildImage {
-	imageName.set("joposcragent/${System.getenv("IMAGE_NAME") ?: rootProject.name}:${System.getenv("IMAGE_TAG") ?: project.version.toString()}")
+	imageName.set("${System.getenv("IMAGE_NAME") ?: "joposcragent/"+rootProject.name}:${System.getenv("IMAGE_TAG") ?: project.version.toString()}")
 }
 
 tasks.register("buildImage") {
