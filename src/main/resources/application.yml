@@ -1,3 +1,11 @@
+management:
+  endpoint:
+    enabled-by-default: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
 spring:
   application:
     name: settings-manager

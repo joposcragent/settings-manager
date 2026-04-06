@@ -1,7 +1,7 @@
 package ru.sadovskie.leo.app.joposcragent.settingsmanager.integration
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
+import tools.jackson.core.type.TypeReference
+import tools.jackson.databind.json.JsonMapper
 import org.springframework.stereotype.Component
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.config.SentenceTransformerProperties
 import java.net.URI
@@ -14,7 +14,7 @@ import java.time.Duration
 @Component
 class SentenceTransformerClient(
 	private val properties: SentenceTransformerProperties,
-	private val objectMapper: ObjectMapper,
+	private val jsonMapper: JsonMapper,
 ) {
 	private val httpClient: HttpClient =
 		HttpClient.newBuilder()
@@ -25,7 +25,7 @@ class SentenceTransformerClient(
 	fun vectorize(text: String): FloatArray {
 		val base = properties.baseUrl.trimEnd('/')
 		val uri = URI.create("$base/").resolve("text/vectorize")
-		val payload = objectMapper.writeValueAsString(TextCorpus(text))
+		val payload = jsonMapper.writeValueAsString(TextCorpus(text))
 
 		val request = HttpRequest.newBuilder(uri)
 			.timeout(Duration.ofSeconds(120))
@@ -38,7 +38,7 @@ class SentenceTransformerClient(
 			throw IllegalStateException("${response.statusCode()} Unprocessable Content: ${response.body()}")
 		}
 
-		val boxed: Array<Float> = objectMapper.readValue(response.body(), object : TypeReference<Array<Float>>() {})
+		val boxed: Array<Float> = jsonMapper.readValue(response.body(), object : TypeReference<Array<Float>>() {})
 		return FloatArray(boxed.size) { i -> boxed[i] }
 	}
 
