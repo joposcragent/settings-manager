@@ -20,18 +20,6 @@ data class SearchQueryItemDto(
 	val updatedAt: OffsetDateTime?,
 )
 
-data class CssQuerySelectorsListDto(
-	val list: List<CssQuerySelectorItemDto>,
-)
-
-data class CssQuerySelectorItemDto(
-	val selector: String,
-	val type: String,
-	val createdAt: OffsetDateTime,
-	@JsonProperty("updatedAt")
-	val updatedAt: OffsetDateTime?,
-)
-
 data class RelevanceThresholdsListDto(
 	val list: List<RelevanceThresholdItemDto>,
 )
