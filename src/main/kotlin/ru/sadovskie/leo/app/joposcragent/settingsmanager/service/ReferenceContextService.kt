@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.dto.ReferenceContextDto
+import ru.sadovskie.leo.app.joposcragent.settingsmanager.dto.ReferenceContextPersistedDto
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.integration.SentenceTransformerClient
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.repository.ReferenceContextRepository
 
@@ -27,7 +28,7 @@ class ReferenceContextService(
 	}
 
 	@Transactional
-	fun setContext(context: String): ReferenceContextDto {
+	fun setContext(context: String): ReferenceContextPersistedDto {
 		val vector = sentenceTransformerClient.vectorize(context)
 		val existing = referenceContextRepository.fetchOne()
 		if (existing == null) {
@@ -38,8 +39,7 @@ class ReferenceContextService(
 		val row = referenceContextRepository.fetchOne()
 			?: throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR)
 		val vec = row.vector
-		return ReferenceContextDto(
-			context = row.text,
+		return ReferenceContextPersistedDto(
 			vector = vec.map { it },
 			createdAt = row.createdAt,
 			updatedAt = row.updatedAt,

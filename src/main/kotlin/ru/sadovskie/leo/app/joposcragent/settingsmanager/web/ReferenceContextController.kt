@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.dto.ReferenceContextDto
+import ru.sadovskie.leo.app.joposcragent.settingsmanager.dto.ReferenceContextPersistedDto
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.service.ReferenceContextService
 
 @RestController
@@ -21,6 +22,6 @@ class ReferenceContextController(
 		consumes = [MediaType.TEXT_PLAIN_VALUE],
 		produces = [MediaType.APPLICATION_JSON_VALUE],
 	)
-	fun post(@RequestBody body: String): ReferenceContextDto =
+	fun post(@RequestBody body: String): ReferenceContextPersistedDto =
 		referenceContextService.setContext(body)
 }

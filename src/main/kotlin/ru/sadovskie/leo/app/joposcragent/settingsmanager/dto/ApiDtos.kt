@@ -14,6 +14,14 @@ data class ReferenceContextDto(
 	val updatedAt: OffsetDateTime?,
 )
 
+/** Тело ответа POST /reference-context (без текста контекста). */
+data class ReferenceContextPersistedDto(
+	val vector: List<Float>,
+	val createdAt: OffsetDateTime,
+	@JsonProperty("updatedAt")
+	val updatedAt: OffsetDateTime?,
+)
+
 data class SearchQueryItemDto(
 	val uuid: UUID,
 	val name: String,
