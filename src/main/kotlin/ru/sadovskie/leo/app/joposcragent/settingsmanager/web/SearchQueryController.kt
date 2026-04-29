@@ -1,5 +1,6 @@
 package ru.sadovskie.leo.app.joposcragent.settingsmanager.web
 
+import jakarta.validation.Valid
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -8,7 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import ru.sadovskie.leo.app.joposcragent.settingsmanager.dto.SearchQueryCreateRequest
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.dto.SearchQueryItemDto
+import ru.sadovskie.leo.app.joposcragent.settingsmanager.dto.SearchQueryPatchRequest
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.service.SearchQueryService
 import java.util.UUID
 
@@ -24,13 +27,25 @@ class SearchQueryController(
 	fun get(@PathVariable entityUuid: UUID): SearchQueryItemDto =
 		searchQueryService.get(entityUuid)
 
-	@PostMapping("/search-query/{entityUuid}", consumes = [MediaType.TEXT_PLAIN_VALUE])
-	fun post(@PathVariable entityUuid: UUID, @RequestBody body: String) {
+	@PostMapping(
+		"/search-query/{entityUuid}",
+		consumes = [MediaType.APPLICATION_JSON_VALUE],
+	)
+	fun post(
+		@PathVariable entityUuid: UUID,
+		@RequestBody @Valid body: SearchQueryCreateRequest,
+	) {
 		searchQueryService.create(entityUuid, body)
 	}
 
-	@PatchMapping("/search-query/{entityUuid}", consumes = [MediaType.TEXT_PLAIN_VALUE])
-	fun patch(@PathVariable entityUuid: UUID, @RequestBody body: String) {
+	@PatchMapping(
+		"/search-query/{entityUuid}",
+		consumes = [MediaType.APPLICATION_JSON_VALUE],
+	)
+	fun patch(
+		@PathVariable entityUuid: UUID,
+		@RequestBody body: SearchQueryPatchRequest,
+	) {
 		searchQueryService.update(entityUuid, body)
 	}
 

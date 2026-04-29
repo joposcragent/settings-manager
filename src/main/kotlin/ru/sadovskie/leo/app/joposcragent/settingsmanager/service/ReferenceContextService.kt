@@ -27,7 +27,7 @@ class ReferenceContextService(
 	}
 
 	@Transactional
-	fun setContext(context: String) {
+	fun setContext(context: String): ReferenceContextDto {
 		val vector = sentenceTransformerClient.vectorize(context)
 		val existing = referenceContextRepository.fetchOne()
 		if (existing == null) {
@@ -35,5 +35,14 @@ class ReferenceContextService(
 		} else {
 			referenceContextRepository.update(existing.uuid, context, vector)
 		}
+		val row = referenceContextRepository.fetchOne()
+			?: throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR)
+		val vec = row.vector
+		return ReferenceContextDto(
+			context = row.text,
+			vector = vec.map { it },
+			createdAt = row.createdAt,
+			updatedAt = row.updatedAt,
+		)
 	}
 }

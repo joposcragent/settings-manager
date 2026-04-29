@@ -18,19 +18,23 @@ class SearchQueryRepository(
 	fun findByUuid(uuid: UUID): SearchQueriesRecord? =
 		dsl.selectFrom(SEARCH_QUERIES).where(SEARCH_QUERIES.UUID.eq(uuid)).fetchOne()
 
-	fun insert(uuid: UUID, query: String) {
+	fun insert(uuid: UUID, name: String, query: String) {
 		dsl.insertInto(SEARCH_QUERIES)
-			.columns(SEARCH_QUERIES.UUID, SEARCH_QUERIES.QUERY)
-			.values(uuid, query)
+			.columns(SEARCH_QUERIES.UUID, SEARCH_QUERIES.NAME, SEARCH_QUERIES.QUERY)
+			.values(uuid, name, query)
 			.execute()
 	}
 
-	fun updateQuery(uuid: UUID, query: String) {
-		dsl.update(SEARCH_QUERIES)
-			.set(SEARCH_QUERIES.QUERY, query)
+	fun update(uuid: UUID, name: String?, query: String?) {
+		var step = dsl.update(SEARCH_QUERIES)
 			.set(SEARCH_QUERIES.UPDATED_AT, DSL.currentOffsetDateTime())
-			.where(SEARCH_QUERIES.UUID.eq(uuid))
-			.execute()
+		if (query != null) {
+			step = step.set(SEARCH_QUERIES.QUERY, query)
+		}
+		if (name != null) {
+			step = step.set(SEARCH_QUERIES.NAME, name)
+		}
+		step.where(SEARCH_QUERIES.UUID.eq(uuid)).execute()
 	}
 
 	fun delete(uuid: UUID) {

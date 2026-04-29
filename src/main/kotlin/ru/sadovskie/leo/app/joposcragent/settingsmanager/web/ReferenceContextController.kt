@@ -16,8 +16,11 @@ class ReferenceContextController(
 	@GetMapping("/reference-context", produces = [MediaType.APPLICATION_JSON_VALUE])
 	fun get(): ReferenceContextDto = referenceContextService.get()
 
-	@PostMapping("/reference-context", consumes = [MediaType.TEXT_PLAIN_VALUE])
-	fun post(@RequestBody body: String) {
+	@PostMapping(
+		"/reference-context",
+		consumes = [MediaType.TEXT_PLAIN_VALUE],
+		produces = [MediaType.APPLICATION_JSON_VALUE],
+	)
+	fun post(@RequestBody body: String): ReferenceContextDto =
 		referenceContextService.setContext(body)
-	}
 }

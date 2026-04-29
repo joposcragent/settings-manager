@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
+import ru.sadovskie.leo.app.joposcragent.settingsmanager.dto.SearchQueryCreateRequest
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.jooq.tables.records.SearchQueriesRecord
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.repository.SearchQueryRepository
 import java.time.OffsetDateTime
@@ -23,11 +24,12 @@ class SearchQueryServiceTest {
 		val existing = mockk<SearchQueriesRecord>()
 		every { repo.findByUuid(uuid) } returns existing
 		val service = SearchQueryService(repo)
+		val body = SearchQueryCreateRequest(name = "n", query = "q")
 		val ex = assertThrows(ResponseStatusException::class.java) {
-			service.create(uuid, "q")
+			service.create(uuid, body)
 		}
 		assertEquals(HttpStatus.CONFLICT, ex.statusCode)
-		verify(exactly = 0) { repo.insert(any(), any()) }
+		verify(exactly = 0) { repo.insert(any(), any(), any()) }
 	}
 
 	@Test
@@ -36,6 +38,7 @@ class SearchQueryServiceTest {
 		val row = mockk<SearchQueriesRecord>()
 		val created = OffsetDateTime.parse("2026-01-01T12:00:00Z")
 		every { row.uuid } returns uuid
+		every { row.name } returns "Label"
 		every { row.query } returns "https://example.com"
 		every { row.createdAt } returns created
 		every { row.updatedAt } returns null
@@ -43,6 +46,7 @@ class SearchQueryServiceTest {
 		val service = SearchQueryService(repo)
 		val dto = service.get(uuid)
 		assertEquals(uuid, dto.uuid)
+		assertEquals("Label", dto.name)
 		assertEquals("https://example.com", dto.query)
 		assertEquals(created, dto.createdAt)
 	}
