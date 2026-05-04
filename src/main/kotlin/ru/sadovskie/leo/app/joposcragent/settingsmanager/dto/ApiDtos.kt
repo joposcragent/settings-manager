@@ -22,6 +22,13 @@ data class ReferenceContextPersistedDto(
 	val updatedAt: OffsetDateTime?,
 )
 
+data class PromptTemplateDto(
+	val template: String?,
+	val createdAt: OffsetDateTime,
+	@JsonProperty("updatedAt")
+	val updatedAt: OffsetDateTime?,
+)
+
 data class SearchQueryItemDto(
 	val uuid: UUID,
 	val name: String,
