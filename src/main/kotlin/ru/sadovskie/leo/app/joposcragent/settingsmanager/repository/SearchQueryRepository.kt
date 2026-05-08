@@ -12,8 +12,15 @@ class SearchQueryRepository(
 	private val dsl: DSLContext,
 ) {
 
-	fun findAll(): List<SearchQueriesRecord> =
-		dsl.selectFrom(SEARCH_QUERIES).orderBy(SEARCH_QUERIES.CREATED_AT).fetch()
+	fun findAll(activeOnly: Boolean = false): List<SearchQueriesRecord> =
+		if (activeOnly) {
+			dsl.selectFrom(SEARCH_QUERIES)
+				.where(SEARCH_QUERIES.IS_ACTIVE.eq(true))
+				.orderBy(SEARCH_QUERIES.CREATED_AT)
+				.fetch()
+		} else {
+			dsl.selectFrom(SEARCH_QUERIES).orderBy(SEARCH_QUERIES.CREATED_AT).fetch()
+		}
 
 	fun findByUuid(uuid: UUID): SearchQueriesRecord? =
 		dsl.selectFrom(SEARCH_QUERIES).where(SEARCH_QUERIES.UUID.eq(uuid)).fetchOne()

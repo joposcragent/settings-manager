@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.dto.SearchQueryCreateRequest
+import ru.sadovskie.leo.app.joposcragent.settingsmanager.dto.SearchQueryItemDto
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.jooq.tables.records.SearchQueriesRecord
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.repository.SearchQueryRepository
 import java.time.OffsetDateTime
@@ -40,7 +41,16 @@ class SearchQueryServiceTest {
 	}
 
 	@Test
-	fun `get returns dto when row exists`() {
+	fun `list delegates activeOnly to repository`() {
+		val repo = mockk<SearchQueryRepository>()
+		every { repo.findAll(true) } returns emptyList()
+		val service = SearchQueryService(repo)
+		assertEquals(emptyList<SearchQueryItemDto>(), service.list(true))
+		verify(exactly = 1) { repo.findAll(true) }
+	}
+
+	@Test
+	fun `get maps record to dto`() {
 		val repo = mockk<SearchQueryRepository>()
 		val row = mockk<SearchQueriesRecord>()
 		val created = OffsetDateTime.parse("2026-01-01T12:00:00Z")

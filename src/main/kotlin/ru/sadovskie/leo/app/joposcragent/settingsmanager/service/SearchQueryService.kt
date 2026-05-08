@@ -16,8 +16,8 @@ class SearchQueryService(
 	private val searchQueryRepository: SearchQueryRepository,
 ) {
 
-	fun listAll(): List<SearchQueryItemDto> =
-		searchQueryRepository.findAll().map { row -> toDto(row) }
+	fun list(activeOnly: Boolean = false): List<SearchQueryItemDto> =
+		searchQueryRepository.findAll(activeOnly).map { row -> toDto(row) }
 
 	fun get(uuid: UUID): SearchQueryItemDto {
 		val row = searchQueryRepository.findByUuid(uuid)
