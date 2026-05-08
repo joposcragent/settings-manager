@@ -24,12 +24,19 @@ class SearchQueryServiceTest {
 		val existing = mockk<SearchQueriesRecord>()
 		every { repo.findByUuid(uuid) } returns existing
 		val service = SearchQueryService(repo)
-		val body = SearchQueryCreateRequest(name = "n", query = "q")
+		val body = SearchQueryCreateRequest(
+			name = "n",
+			query = "q",
+			contentRelevance = 0.82,
+			notificationRelevance = 0.92,
+		)
 		val ex = assertThrows(ResponseStatusException::class.java) {
 			service.create(uuid, body)
 		}
 		assertEquals(HttpStatus.CONFLICT, ex.statusCode)
-		verify(exactly = 0) { repo.insert(any(), any(), any()) }
+		verify(exactly = 0) {
+			repo.insert(any(), any(), any(), any(), any(), any(), any())
+		}
 	}
 
 	@Test
@@ -40,6 +47,10 @@ class SearchQueryServiceTest {
 		every { row.uuid } returns uuid
 		every { row.name } returns "Label"
 		every { row.query } returns "https://example.com"
+		every { row.contentRelevance } returns 0.82
+		every { row.notificationRelevance } returns 0.92
+		every { row.isActive } returns true
+		every { row.isLazyScraping } returns false
 		every { row.createdAt } returns created
 		every { row.updatedAt } returns null
 		every { repo.findByUuid(uuid) } returns row
@@ -48,6 +59,10 @@ class SearchQueryServiceTest {
 		assertEquals(uuid, dto.uuid)
 		assertEquals("Label", dto.name)
 		assertEquals("https://example.com", dto.query)
+		assertEquals(0.82, dto.contentRelevance)
+		assertEquals(0.92, dto.notificationRelevance)
+		assertEquals(true, dto.isActive)
+		assertEquals(false, dto.isLazyScraping)
 		assertEquals(created, dto.createdAt)
 	}
 }
