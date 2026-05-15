@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.dto.ReferenceContextDto
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.dto.ReferenceContextPersistedDto
+import ru.sadovskie.leo.app.joposcragent.settingsmanager.dto.ReferenceContextVectorDto
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.service.ReferenceContextService
 
 @RestController
@@ -16,6 +17,9 @@ class ReferenceContextController(
 
 	@GetMapping("/reference-context", produces = [MediaType.APPLICATION_JSON_VALUE])
 	fun get(): ReferenceContextDto = referenceContextService.get()
+
+	@GetMapping("/reference-context/vector", produces = [MediaType.APPLICATION_JSON_VALUE])
+	fun getVector(): ReferenceContextVectorDto = referenceContextService.getVectorOnly()
 
 	@PostMapping(
 		"/reference-context",

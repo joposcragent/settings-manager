@@ -25,6 +25,11 @@ data class ReferenceContextPersistedDto(
 	val updatedAt: OffsetDateTime?,
 )
 
+/** Тело ответа GET /reference-context/vector (только вектор). */
+data class ReferenceContextVectorDto(
+	val vector: List<Float>,
+)
+
 data class PromptTemplateDto(
 	val template: String?,
 	val createdAt: OffsetDateTime,

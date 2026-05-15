@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.dto.ReferenceContextDto
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.dto.ReferenceContextPersistedDto
+import ru.sadovskie.leo.app.joposcragent.settingsmanager.dto.ReferenceContextVectorDto
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.integration.SentenceTransformerClient
 import ru.sadovskie.leo.app.joposcragent.settingsmanager.repository.ReferenceContextRepository
 
@@ -25,6 +26,12 @@ class ReferenceContextService(
 			createdAt = row.createdAt,
 			updatedAt = row.updatedAt,
 		)
+	}
+
+	fun getVectorOnly(): ReferenceContextVectorDto {
+		val row = referenceContextRepository.fetchOne()
+			?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+		return ReferenceContextVectorDto(vector = row.vector.map { it })
 	}
 
 	@Transactional
